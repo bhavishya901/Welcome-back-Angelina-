@@ -375,7 +375,7 @@ footer{
     </p>
   </div>
 
-  <button class="scroll-btn" onclick="document.querySelector('#next-section').scrollIntoView({behavior:'smooth'})">
+  <button class="scroll-btn" id="littleScrollBtn" type="button">
     Little Scroll
   </button>
 </section>
@@ -441,7 +441,7 @@ footer{
   Made with a little bit of midnight & gold ✦
 </footer>
 
-<audio id="music" src="music.mp3" loop></audio>
+<audio id="music" src="lv_0_20260809194100.mp3" loop></audio>
 <button class="music-btn" id="musicBtn" aria-label="Toggle music">♪</button>
 
 <script>
@@ -496,20 +496,33 @@ function playAmbientSound() {
   }, 1800);
 }
 
+async function startMusic() {
+  if(playing) return true;
+
+  try{
+    await music.play();
+    playing = true;
+    musicBtn.textContent = "Ⅱ";
+    musicBtn.classList.add("playing");
+    return true;
+  } catch(e) {
+    // Fallback to soothing synthesized sound if music.mp3 is not present
+    try{
+      playAmbientSound();
+      playing = true;
+      musicBtn.textContent = "Ⅱ";
+      musicBtn.classList.add("playing");
+      return true;
+    } catch(fallbackError) {
+      console.log("Music could not be started:", fallbackError);
+      return false;
+    }
+  }
+}
+
 musicBtn.addEventListener("click", async () => {
   if(!playing) {
-    try {
-      await music.play();
-      playing = true;
-      musicBtn.textContent = "Ⅱ";
-      musicBtn.classList.add("playing");
-    } catch(e) {
-      // Fallback to soothing synthesized sound if music.mp3 is not present
-      playing = true;
-      musicBtn.textContent = "Ⅱ";
-      musicBtn.classList.add("playing");
-      playAmbientSound();
-    }
+    await startMusic();
   } else {
     music.pause();
     if(ambientInterval) clearInterval(ambientInterval);
@@ -517,6 +530,17 @@ musicBtn.addEventListener("click", async () => {
     musicBtn.textContent = "♪";
     musicBtn.classList.remove("playing");
   }
+});
+
+/* User-gesture autoplay: Little Scroll starts music, then scrolls. */
+const littleScrollBtn = document.getElementById("littleScrollBtn");
+
+littleScrollBtn.addEventListener("click", async () => {
+  await startMusic();
+
+  document.querySelector("#next-section").scrollIntoView({
+    behavior: "smooth"
+  });
 });
 
 /* Cinematic blue space background */
