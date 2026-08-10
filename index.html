@@ -318,27 +318,86 @@ footer{
   position:fixed;
   right:24px;
   bottom:24px;
-  width:54px;
-  height:54px;
+  width:58px;
+  height:58px;
   border-radius:50%;
-  border:1px solid rgba(117,234,255,.5);
-  background:rgba(2,12,27,.75);
+  border:1px solid rgba(201,154,53,.38);
+  background:rgba(20,15,7,.82);
   color:var(--gold);
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   cursor:pointer;
   z-index:30;
   font-size:19px;
-  box-shadow:0 0 25px rgba(173,132,48,.14);
-  transition:.3s;
+  box-shadow:0 8px 28px rgba(65,45,10,.18);
+  transition:.35s ease;
   display:flex;
   align-items:center;
   justify-content:center;
 }
-
+.music-btn::before{
+  content:"";
+  position:absolute;
+  inset:-4px;
+  border-radius:50%;
+  border:2px solid transparent;
+  border-top-color:#c99a35;
+  border-right-color:rgba(232,199,111,.8);
+  opacity:0;
+  animation:goldMusicSpin 2.2s linear infinite;
+  transition:opacity:.4s ease;
+}
+.music-btn::after{
+  content:"";
+  position:absolute;
+  inset:4px;
+  border-radius:50%;
+  pointer-events:none;
+}
 .music-btn.playing{
-  color:var(--gold);
-  border-color:var(--gold);
-  box-shadow:0 0 30px rgba(255,212,90,.3);
+  color:#f3d47c;
+  border-color:#c99a35;
+  box-shadow:0 0 28px rgba(201,154,53,.34),0 0 55px rgba(232,199,111,.14);
+}
+.music-btn.playing::before{opacity:1;}
+.music-btn.playing::after{
+  animation:goldMusicPulse 2.4s ease-in-out infinite;
+}
+.music-btn:hover{
+  transform:translateY(-3px) scale(1.04);
+  border-color:#e8c76f;
+  box-shadow:0 0 35px rgba(201,154,53,.35);
+}
+.music-bars{
+  display:none;
+  align-items:flex-end;
+  justify-content:center;
+  gap:3px;
+  height:20px;
+  position:relative;
+  z-index:2;
+}
+.music-bar{
+  width:3px;
+  border-radius:3px;
+  background:linear-gradient(to top,#a9791f,#f3d47c,#fff1b5);
+  box-shadow:0 0 7px rgba(201,154,53,.7);
+  animation:goldBar .85s ease-in-out infinite;
+  transform-origin:bottom;
+}
+.music-bar:nth-child(1){height:8px;animation-delay:0s;}
+.music-bar:nth-child(2){height:16px;animation-delay:.16s;}
+.music-bar:nth-child(3){height:11px;animation-delay:.08s;}
+.music-bar:nth-child(4){height:15px;animation-delay:.24s;}
+.music-bar:nth-child(5){height:7px;animation-delay:.12s;}
+@keyframes goldMusicSpin{to{transform:rotate(360deg)}}
+@keyframes goldMusicPulse{
+  0%,100%{box-shadow:0 0 18px rgba(201,154,53,.25),0 0 35px rgba(232,199,111,.12)}
+  50%{box-shadow:0 0 30px rgba(201,154,53,.48),0 0 60px rgba(232,199,111,.22)}
+}
+@keyframes goldBar{
+  0%,100%{transform:scaleY(.35);opacity:.7}
+  50%{transform:scaleY(1);opacity:1}
 }
 
 .reveal{
@@ -366,22 +425,6 @@ body{
   background-attachment:fixed;
 }
 
-.hero:before{
-  content:"";
-  position:absolute;
-  width:min(720px,88vw);
-  height:min(720px,88vw);
-  border-radius:50%;
-  border:1px solid rgba(190,148,61,.12);
-  box-shadow:
-    0 0 0 26px rgba(190,148,61,.025),
-    0 0 0 52px rgba(190,148,61,.018);
-  pointer-events:none;
-  animation:royalHalo 12s ease-in-out infinite;
-}
-@keyframes royalHalo{
-  50%{transform:scale(1.025);opacity:.72}
-}
 
 .hero-content{
   position:relative;
@@ -445,10 +488,6 @@ footer{
 }
 
 @media(max-width:700px){
-  .hero:before{
-    width:92vw;
-    height:92vw;
-  }
 }
 
 
@@ -597,7 +636,14 @@ footer{
 </footer>
 
 <audio id="music" src="lv_0_20260810152748.mp3" loop></audio>
-<button class="music-btn" id="musicBtn" aria-label="Toggle music">♪</button>
+<button class="music-btn" id="musicBtn" aria-label="Toggle music">
+  <span class="music-note">♪</span>
+  <span class="music-bars" aria-hidden="true">
+    <span class="music-bar"></span><span class="music-bar"></span>
+    <span class="music-bar"></span><span class="music-bar"></span>
+    <span class="music-bar"></span>
+  </span>
+</button>
 
 <script>
 /* WELCOME BACK ENTRY + USER-GESTURE AUTOPLAY */
@@ -672,7 +718,7 @@ async function startMusic() {
   try{
     await music.play();
     playing = true;
-    musicBtn.textContent = "Ⅱ";
+    musicBtn.querySelector(".music-note").style.display = "none"; musicBtn.querySelector(".music-bars").style.display = "flex";
     musicBtn.classList.add("playing");
     return true;
   } catch(e) {
@@ -680,7 +726,7 @@ async function startMusic() {
     try{
       playAmbientSound();
       playing = true;
-      musicBtn.textContent = "Ⅱ";
+      musicBtn.querySelector(".music-note").style.display = "none"; musicBtn.querySelector(".music-bars").style.display = "flex";
       musicBtn.classList.add("playing");
       return true;
     } catch(fallbackError) {
@@ -697,7 +743,7 @@ musicBtn.addEventListener("click", async () => {
     music.pause();
     if(ambientInterval) clearInterval(ambientInterval);
     playing = false;
-    musicBtn.textContent = "♪";
+    musicBtn.querySelector(".music-note").style.display = "inline"; musicBtn.querySelector(".music-bars").style.display = "none";
     musicBtn.classList.remove("playing");
   }
 });
