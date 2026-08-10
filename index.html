@@ -451,6 +451,56 @@ footer{
   }
 }
 
+
+/* ANGELINA LOOK LIKE PHOTO SLOT */
+.angelina-look-section{
+  padding-top:70px;
+  padding-bottom:70px;
+  text-align:center;
+}
+
+.angelina-look-section h2{
+  margin-bottom:35px;
+  text-transform:none;
+  font-size:clamp(48px,10vw,72px);
+}
+
+.angelina-photo-slot{
+  width:min(520px,90vw);
+  margin:0 auto;
+}
+
+.angelina-photo-frame{
+  position:relative;
+  padding:10px;
+  border:1px solid rgba(201,154,53,.48);
+  border-radius:24px;
+  background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(247,232,191,.74));
+  box-shadow:
+    0 25px 70px rgba(99,73,24,.16),
+    0 0 35px rgba(201,154,53,.12),
+    inset 0 0 25px rgba(255,255,255,.65);
+  overflow:hidden;
+}
+
+.angelina-photo-frame:before{
+  content:"";
+  position:absolute;
+  inset:7px;
+  border:1px solid rgba(201,154,53,.20);
+  border-radius:18px;
+  pointer-events:none;
+  z-index:2;
+}
+
+.angelina-photo-frame img{
+  display:block;
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  border-radius:17px;
+}
+
 </style>
 </head>
 
@@ -511,6 +561,17 @@ footer{
   </div>
 </section>
 
+<!-- ANGELINA LOOK LIKE PHOTO SLOT -->
+<section class="angelina-look-section">
+  <div class="section-label reveal">A little beauty</div>
+  <h2 class="reveal">Angelina look like</h2>
+
+  <div class="angelina-photo-slot reveal">
+    <div class="angelina-photo-frame">
+      <img src="40634.png" alt="Angelina">
+    </div>
+  </div>
+</section>
 
 <section>
   <div class="section-label reveal">A message</div>
