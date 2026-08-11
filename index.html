@@ -540,6 +540,36 @@ footer{
   border-radius:17px;
 }
 
+
+/* ==========================
+   PHOTO PROTECTION
+   Prevent normal long-press/download/drag actions on photos.
+   Note: this is deterrence, not true DRM.
+========================== */
+.angelina-photo-frame,
+.angelina-photo-frame img{
+  -webkit-touch-callout:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-user-drag:none;
+  user-drag:none;
+}
+.angelina-photo-frame{position:relative;}
+.angelina-photo-frame img{
+  pointer-events:none;
+  touch-action:pan-y;
+}
+.angelina-photo-frame::after{
+  content:"";
+  position:absolute;
+  inset:10px;
+  z-index:5;
+  border-radius:17px;
+  background:transparent;
+  -webkit-touch-callout:none;
+  user-select:none;
+}
+
 </style>
 </head>
 
@@ -821,6 +851,30 @@ function animate(){
 }
 
 animate();
+
+
+/* ==========================
+   PHOTO PROTECTION
+========================== */
+document.addEventListener("contextmenu", (e) => {
+  if (e.target.closest(".angelina-photo-frame")) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+});
+document.addEventListener("dragstart", (e) => {
+  if (e.target.closest(".angelina-photo-frame")) {
+    e.preventDefault();
+    return false;
+  }
+});
+document.addEventListener("selectstart", (e) => {
+  if (e.target.closest(".angelina-photo-frame")) {
+    e.preventDefault();
+    return false;
+  }
+});
 </script>
 
 </body>
